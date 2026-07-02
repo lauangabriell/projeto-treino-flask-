@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Treino em Casa - Calistenia & Pilates</title>
 <style>
-  /* As mesmas variáveis de estilo que você enviou, focadas no minimalismo verde/cinza */
   :root {
     --green-50:  #E8F8F0; --green-100: #C3EDDA; --green-500: #22A96A; --green-600: #1A8A55;
     --green-800: #0D5234; --gray-50:   #F5F5F3; --gray-100:  #EAEAE7; --gray-200:  #D4D4CF;
@@ -14,210 +13,163 @@
     --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--gray-800); min-height: 100vh; }
-  
-  header { background: var(--surface); border-bottom: 1px solid var(--gray-100); padding: 0 24px; height: 60px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
-  .logo-icon { width: 36px; height: 36px; background: var(--green-500); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
-  header h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
-  header span { font-size: 12px; color: var(--gray-400); }
-
-  .layout { max-width: 900px; margin: 0 auto; padding: 28px 20px; display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
-  @media (max-width: 720px) { .layout { grid-template-columns: 1fr; } }
-  
-  .card { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--gray-100); padding: 20px; }
-  .card-title { font-size: 13px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; margin-bottom: 14px; }
-  
-  .goal-grid { display: grid; gap: 8px; margin-bottom: 18px; }
-  .goal-card { display: flex; align-items: center; gap: 12px; background: var(--gray-50); border: 1.5px solid transparent; border-radius: var(--radius-md); padding: 12px 14px; cursor: pointer; transition: 0.15s; }
-  .goal-card.active { background: var(--green-50); border-color: var(--green-500); }
-  .goal-emoji { font-size: 22px; }
-  .goal-name { font-size: 14px; font-weight: 600; }
-  .goal-sub { font-size: 12px; color: var(--gray-400); }
-  .goal-radio { margin-left: auto; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--gray-200); background: white; display: flex; align-items: center; justify-content: center; }
-  .goal-card.active .goal-radio { border-color: var(--green-500); background: var(--green-500); }
-  .goal-card.active .goal-radio::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; }
-
-  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-  .field label { display: block; font-size: 12px; color: var(--gray-400); font-weight: 500; margin-bottom: 5px; }
-  .field select { width: 100%; padding: 9px 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 13px; background: var(--gray-50); outline: none; }
-  .field-full { grid-column: 1 / -1; }
-
-  .btn-generate { width: 100%; padding: 12px; background: var(--green-500); color: white; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.15s; }
-  .btn-generate:disabled { background: var(--gray-200); cursor: not-allowed; }
-  .right-col { display: flex; flex-direction: column; gap: 16px; }
-  .treino-header { margin-bottom: 14px; }
-  .treino-title { font-size: 18px; font-weight: 700; }
-  .treino-desc { font-size: 13px; color: var(--gray-400); margin-top: 3px; }
-  .treino-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom:18px; }
-  .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; background: var(--green-50); color: var(--green-800); }
-  .badge.gray { background: var(--gray-100); color: var(--gray-600); }
-  
-  .dia-block { margin-bottom: 16px; }
-  .dia-label { font-size: 11px; font-weight: 700; color: var(--green-600); text-transform: uppercase; margin-bottom: 8px; }
-  .ex-item { display: flex; align-items: center; gap: 10px; background: var(--gray-50); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 6px; }
-  .ex-num { width: 24px; height: 24px; border-radius: 50%; background: var(--green-500); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .ex-name { font-size: 14px; font-weight: 500; }
-  .ex-detail { font-size: 12px; color: var(--gray-400); }
-  .ex-chips { margin-left: auto; display: flex; gap: 5px; }
-  .chip { font-size: 11px; padding: 2px 8px; border-radius: 100px; background: white; border: 1px solid var(--gray-200); color: var(--gray-600); }
-
-  .empty { text-align: center; padding: 40px 20px; color: var(--gray-400); }
-  .empty-icon { font-size: 40px; margin-bottom: 10px; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--gray-800); padding: 40px 20px; display: flex; justify-content: center; }
+  .container { width: 100%; max-width: 900px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media(max-width: 768px) { .container { grid-template-columns: 1fr; } }
+  .panel { background: var(--surface); padding: 32px; border-radius: var(--radius-lg); border: 1px solid var(--gray-100); box-shadow: 0 4px 24px rgba(0,0,0,0.02); display: flex; flex-direction: column; gap: 24px; height: fit-content; }
+  h2 { font-size: 20px; font-weight: 600; color: var(--gray-800); }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  label { font-size: 14px; font-weight: 500; color: var(--gray-600); }
+  select, input { width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--gray-200); background: var(--bg); color: var(--gray-800); font-family: inherit; font-size: 15px; outline: none; transition: border-color 0.2s; }
+  select:focus, input:focus { border-color: var(--green-500); }
+  .btn { background: var(--green-500); color: white; padding: 14px; border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; text-align: center; }
+  .btn:hover { background: var(--green-600); }
+  .btn-secondary { background: var(--gray-100); color: var(--gray-800); margin-top: 12px; }
+  .btn-secondary:hover { background: var(--gray-200); }
+  .treino-output { background: var(--surface); border: 1px solid var(--gray-100); border-radius: var(--radius-lg); padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.02); }
+  .badge { background: var(--green-50: #E8F8F0); color: var(--green-800); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+  .badge.gray { background: var(--gray-50); color: var(--gray-600); }
+  .ex-item { display: flex; gap: 16px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--gray-50); }
+  .ex-num { background: var(--green-50); color: var(--green-600); font-weight: 700; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .ex-name { font-weight: 600; font-size: 15px; color: var(--gray-800); }
+  .ex-detail { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
+  .historico-section { margin-top: 24px; border-top: 2px dashed var(--gray-100); padding-top: 24px; }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo-icon">🤸</div>
-  <div>
-    <h1>Treino em Casa</h1>
-    <span>Calistenia & Pilates</span>
-  </div>
-</header>
+<div class="container">
+  <div class="panel">
+    <div>
+      <h2>Perfil Ativo (Banco Neon)</h2>
+      <p style="font-size: 14px; color: var(--green-600); font-weight: bold; margin-top: 4px;">👤 Lauan Gabriel (ID: #1)</p>
+    </div>
+    
+    <h2>Personalize seu Treino</h2>
+    <div class="form-group">
+      <label>Modalidade Alvo</label>
+      <select id="goal">
+        <option value="calistenia">Calistenia (Força e Definição)</option>
+        <option value="pilates">Pilates (Core e Flexibilidade)</option>
+        <option value="cardio">Cardio HIIT (Resistência)</option>
+      </select>
+    </div>
 
-<div class="layout">
-  <div>
-    <div class="card">
-      <p class="card-title">Configurar Sessão</p>
+    <div class="form-group">
+      <label>Nível de Experiência</label>
+      <select id="level">
+        <option value="Iniciante">Iniciante</option>
+        <option value="Intermediário">Intermediário</option>
+        <option value="Avançado">Avançado</option>
+      </select>
+    </div>
 
-      <div class="goal-grid">
-        <div class="goal-card" data-goal="calistenia" onclick="selectGoal(this)">
-          <span class="goal-emoji">🤸</span>
-          <div class="goal-text">
-            <div class="goal-name">Calistenia Pura</div>
-            <div class="goal-sub">Força e peso corporal</div>
-          </div>
-          <div class="goal-radio"></div>
-        </div>
-        <div class="goal-card" data-goal="pilates" onclick="selectGoal(this)">
-          <span class="goal-emoji">🧘‍♀️</span>
-          <div class="goal-text">
-            <div class="goal-name">Pilates de Solo</div>
-            <div class="goal-sub">Postura, core e controle</div>
-          </div>
-          <div class="goal-radio"></div>
-        </div>
-        <div class="goal-card" data-goal="misto" onclick="selectGoal(this)">
-          <span class="goal-emoji">🔄</span>
-          <div class="goal-text">
-            <div class="goal-name">Misto Dinâmico</div>
-            <div class="goal-sub">Flexibilidade e Resistência</div>
-          </div>
-          <div class="goal-radio"></div>
-        </div>
+    <div class="form-group">
+      <label>Duração Estimada (Minutos)</label>
+      <input type="number" id="duration" value="30" min="15" max="90">
+    </div>
+
+    <button class="btn" onclick="gerarTreino()">Gerar Rotina Dinâmica</button>
+    
+    <div class="historico-section">
+      <h2>Meus Treinos Salvos (Histórico)</h2>
+      <div id="meus-treinos-salvos" style="margin-top: 12px; max-height: 250px; overflow-y: auto;">
+        <p style="color: var(--gray-400); font-size: 14px;">Nenhum treino carregado.</p>
       </div>
-
-      <div class="fields">
-        <div class="field">
-          <label>Nível (ER: Nível de experiência)</label>
-          <select id="nivel">
-            <option value="Iniciante">Iniciante</option>
-            <option value="Intermediário">Intermediário</option>
-            <option value="Avançado">Avançado</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Duração (ER: Duração estimada)</label>
-          <select id="duracao">
-            <option value="15">15 min</option>
-            <option value="30" selected>30 min</option>
-            <option value="45">45 min</option>
-          </select>
-        </div>
-        <div class="field field-full">
-          <label>Equipamento (ER: Equip. Necessário)</label>
-          <select id="equip">
-            <option value="Nenhum">Somente Peso Corporal</option>
-            <option value="Tapete">Tapete / Colchonete</option>
-          </select>
-        </div>
-      </div>
-
-      <button class="btn-generate" id="genBtn" onclick="gerarTreino()" disabled>✨ Gerar Treino</button>
     </div>
   </div>
 
-  <div class="right-col">
-    <div class="card" id="resultCard">
-      <div class="empty" id="emptyState">
-        <div class="empty-icon">🏠</div>
-        <p>Escolha sua modalidade para gerar exercícios que ligam as entidades Usuário, Treino e Exercício.</p>
-      </div>
-      <div id="treinoResult" style="display:none;"></div>
+  <div class="treino-output" id="treino-resultado">
+    <div style="text-align: center; color: var(--gray-400); padding-top: 60px;">
+      <p>Configure as opções ao lado e clique em <strong>Gerar Rotina Dinâmica</strong>.</p>
     </div>
   </div>
 </div>
 
 <script>
-let selectedGoal = null;
+  let treinoAtual = null;
 
-function selectGoal(el) {
-  document.querySelectorAll('.goal-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  selectedGoal = el.dataset.goal;
-  document.getElementById('genBtn').disabled = false;
-}
+  // Gerador dinâmico estendido com mais opções de exercícios
+  function gerarTreino() {
+    const goal = document.getElementById('goal').value;
+    const level = document.getElementById('level').value;
+    const duration = document.getElementById('duration').value;
 
-// Simulador de requisição (Substitui o Gemini real para não quebrar o protótipo no navegador durante a apresentação)
-async function gerarTreino() {
-  if (!selectedGoal) return;
-  const nivel = document.getElementById('nivel').value;
-  const duracao = document.getElementById('duracao').value;
+    let exercicios = [];
+    if (goal === 'calistenia') {
+      exercicios = level === 'Iniciante' ? ['Flexões de Joelho', 'Agachamentos Livres', 'Prancha Abdominal', 'Remada Invertida'] : 
+                   level === 'Intermediário' ? ['Flexões Tradicionais', 'Pistol Squat Adaptado', 'Barra Fixa', 'Abdominal Infra'] :
+                   ['Flexões Batendo Palma', 'Muscle-Up na Barra', 'Agachamento com Salto', 'Dragon Flag'];
+    } else if (goal === 'pilates') {
+      exercicios = level === 'Iniciante' ? ['The Hundred (Modificado)', 'The Roll Up', 'Single Leg Stretch', 'Spine Stretch'] :
+                   ['The Hundred Clássico', 'Criss Cross Pilates', 'Swan Dive', 'Teaser Progressivo'];
+    } else {
+      exercicios = ['Burpees', 'Polichinelos Intensos', 'Corrida Estática', 'Escalador (Mountain Climbers)', 'Agachamento Isométrico'];
+    }
 
-  document.getElementById('emptyState').style.display = 'none';
-  const result = document.getElementById('treinoResult');
-  result.style.display = 'block';
-  result.innerHTML = `<div style="padding: 20px; text-align:center; color: #9A9A93;">Buscando do Banco de Dados (Simulação)...</div>`;
+    treinoAtual = { nivel: level, objetivo: goal, duracao: duration, exercicios: exercicios };
 
-  // Simulando delay do Banco/Backend
-  setTimeout(() => {
-    let foco = selectedGoal === 'calistenia' ? 'Força Superior e Core' : 'Respiração e Controle Pelvico';
-    let ex1 = selectedGoal === 'calistenia' ? 'Flexão de Braço (Push-up)' : 'The Hundred';
-    let ex2 = selectedGoal === 'calistenia' ? 'Agachamento Pistol (Progressão)' : 'Roll-Up';
-    
-    result.innerHTML = `
-      <div class="treino-header">
-        <div class="treino-title">Sessão de ${selectedGoal.charAt(0).toUpperCase() + selectedGoal.slice(1)}</div>
-        <div class="treino-desc">Foque na execução e na qualidade do movimento.</div>
+    const resultDiv = document.getElementById('treino-resultado');
+    resultDiv.innerHTML = `
+      <div style="margin-bottom: 20px;">
+        <span class="badge">${level}</span>
+        <span class="badge gray">${duration} min</span>
+        <h2 style="margin-top: 12px;">Sessão de ${goal.toUpperCase()}</h2>
       </div>
-      <div class="treino-meta">
-        <span class="badge">${nivel}</span>
-        <span class="badge gray">${duracao} min</span>
-        <span class="badge gray">ID_Treino: #042</span>
+      <div style="margin-bottom: 24px;">
+        ${exercicios.map((ex, idx) => `
+          <div class="ex-item">
+            <div class="ex-num">${idx + 1}</div>
+            <div>
+              <div class="ex-name">${ex}</div>
+              <div class="ex-detail">Executar com cadência controlada e foco muscular.</div>
+            </div>
+          </div>
+        `).join('')}
       </div>
-      <hr style="border:none; border-top:1px solid #EAEAE7; margin-bottom: 16px;">
-      
-      <div class="dia-block">
-        <div class="dia-label">Sessão Única — ${foco}</div>
-        
-        <div class="ex-item">
-          <div class="ex-num">1</div>
-          <div>
-            <div class="ex-name">${ex1}</div>
-            <div class="ex-detail">Lembre-se de manter o alinhamento.</div>
-          </div>
-          <div class="ex-chips">
-            <span class="chip">3 séries</span>
-            <span class="chip">12 rep</span>
-          </div>
-        </div>
-
-        <div class="ex-item">
-          <div class="ex-num">2</div>
-          <div>
-            <div class="ex-name">${ex2}</div>
-            <div class="ex-detail">Concentre a força no abdômen.</div>
-          </div>
-          <div class="ex-chips">
-            <span class="chip">3 séries</span>
-            <span class="chip">10 rep</span>
-          </div>
-        </div>
-
-      </div>
+      <button class="btn" style="width:100%" onclick="salvarTreinoNoBanco()">💾 Salvar Treino no meu Perfil</button>
     `;
-  }, 1200);
-}
+  }
+
+  // Envia os dados para a API Flask salvar no Neon
+  function salvarTreinoNoBanco() {
+    if (!treinoAtual) return;
+
+    fetch('/api/treino/salvar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(treinoAtual)
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message);
+      carregarTreinosSalvos(); // Atualiza a lista de históricos instantaneamente
+    })
+    .catch(err => console.error("Erro ao salvar:", err));
+  }
+
+  // Puxa do banco Neon tudo o que o usuário já fez e salvou
+  function carregarTreinosSalvos() {
+    fetch('/api/treinos/salvos')
+    .then(res => res.json())
+    .then(treinos => {
+      const box = document.getElementById('meus-treinos-salvos');
+      if (treinos.length === 0) {
+        box.innerHTML = '<p style="color: var(--gray-400); font-size:14px;">Nenhum treino salvo ainda.</p>';
+        return;
+      }
+      box.innerHTML = treinos.map(t => `
+        <div style="background: var(--gray-50); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 8px; border: 1px solid var(--gray-100);">
+          <strong style="font-size:14px; color: var(--green-600)">💪 Rotina #${t.id_treino} - ${t.objetivo}</strong>
+          <div style="font-size:11px; color: var(--gray-600); margin: 2px 0;">Nível: ${t.nivel} | Duração: ${t.duracao} min</div>
+          <div style="font-size:12px; color: var(--gray-800); font-style: italic; margin-top: 4px;">⚡ ${t.exercicios.join(', ')}</div>
+        </div>
+      `).join('');
+    });
+  }
+
+  // Carrega o histórico assim que a página abre
+  document.addEventListener("DOMContentLoaded", carregarTreinosSalvos);
 </script>
 </body>
 </html>
