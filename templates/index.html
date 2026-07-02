@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Treino em Casa - Calistenia & Pilates</title>
+<style>
+  /* As mesmas variáveis de estilo que você enviou, focadas no minimalismo verde/cinza */
+  :root {
+    --green-50:  #E8F8F0; --green-100: #C3EDDA; --green-500: #22A96A; --green-600: #1A8A55;
+    --green-800: #0D5234; --gray-50:   #F5F5F3; --gray-100:  #EAEAE7; --gray-200:  #D4D4CF;
+    --gray-400:  #9A9A93; --gray-600:  #5C5C57; --gray-800:  #1E1E1A;
+    --bg: #F5F5F3; --surface: #FFFFFF;
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--gray-800); min-height: 100vh; }
+  
+  header { background: var(--surface); border-bottom: 1px solid var(--gray-100); padding: 0 24px; height: 60px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 10; }
+  .logo-icon { width: 36px; height: 36px; background: var(--green-500); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+  header h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+  header span { font-size: 12px; color: var(--gray-400); }
+
+  .layout { max-width: 900px; margin: 0 auto; padding: 28px 20px; display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 720px) { .layout { grid-template-columns: 1fr; } }
+  
+  .card { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--gray-100); padding: 20px; }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; margin-bottom: 14px; }
+  
+  .goal-grid { display: grid; gap: 8px; margin-bottom: 18px; }
+  .goal-card { display: flex; align-items: center; gap: 12px; background: var(--gray-50); border: 1.5px solid transparent; border-radius: var(--radius-md); padding: 12px 14px; cursor: pointer; transition: 0.15s; }
+  .goal-card.active { background: var(--green-50); border-color: var(--green-500); }
+  .goal-emoji { font-size: 22px; }
+  .goal-name { font-size: 14px; font-weight: 600; }
+  .goal-sub { font-size: 12px; color: var(--gray-400); }
+  .goal-radio { margin-left: auto; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--gray-200); background: white; display: flex; align-items: center; justify-content: center; }
+  .goal-card.active .goal-radio { border-color: var(--green-500); background: var(--green-500); }
+  .goal-card.active .goal-radio::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; }
+
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; color: var(--gray-400); font-weight: 500; margin-bottom: 5px; }
+  .field select { width: 100%; padding: 9px 10px; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 13px; background: var(--gray-50); outline: none; }
+  .field-full { grid-column: 1 / -1; }
+
+  .btn-generate { width: 100%; padding: 12px; background: var(--green-500); color: white; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.15s; }
+  .btn-generate:disabled { background: var(--gray-200); cursor: not-allowed; }
+  .right-col { display: flex; flex-direction: column; gap: 16px; }
+  .treino-header { margin-bottom: 14px; }
+  .treino-title { font-size: 18px; font-weight: 700; }
+  .treino-desc { font-size: 13px; color: var(--gray-400); margin-top: 3px; }
+  .treino-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom:18px; }
+  .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; background: var(--green-50); color: var(--green-800); }
+  .badge.gray { background: var(--gray-100); color: var(--gray-600); }
+  
+  .dia-block { margin-bottom: 16px; }
+  .dia-label { font-size: 11px; font-weight: 700; color: var(--green-600); text-transform: uppercase; margin-bottom: 8px; }
+  .ex-item { display: flex; align-items: center; gap: 10px; background: var(--gray-50); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 6px; }
+  .ex-num { width: 24px; height: 24px; border-radius: 50%; background: var(--green-500); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ex-name { font-size: 14px; font-weight: 500; }
+  .ex-detail { font-size: 12px; color: var(--gray-400); }
+  .ex-chips { margin-left: auto; display: flex; gap: 5px; }
+  .chip { font-size: 11px; padding: 2px 8px; border-radius: 100px; background: white; border: 1px solid var(--gray-200); color: var(--gray-600); }
+
+  .empty { text-align: center; padding: 40px 20px; color: var(--gray-400); }
+  .empty-icon { font-size: 40px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">🤸</div>
+  <div>
+    <h1>Treino em Casa</h1>
+    <span>Calistenia & Pilates</span>
+  </div>
+</header>
+
+<div class="layout">
+  <div>
+    <div class="card">
+      <p class="card-title">Configurar Sessão</p>
+
+      <div class="goal-grid">
+        <div class="goal-card" data-goal="calistenia" onclick="selectGoal(this)">
+          <span class="goal-emoji">🤸</span>
+          <div class="goal-text">
+            <div class="goal-name">Calistenia Pura</div>
+            <div class="goal-sub">Força e peso corporal</div>
+          </div>
+          <div class="goal-radio"></div>
+        </div>
+        <div class="goal-card" data-goal="pilates" onclick="selectGoal(this)">
+          <span class="goal-emoji">🧘‍♀️</span>
+          <div class="goal-text">
+            <div class="goal-name">Pilates de Solo</div>
+            <div class="goal-sub">Postura, core e controle</div>
+          </div>
+          <div class="goal-radio"></div>
+        </div>
+        <div class="goal-card" data-goal="misto" onclick="selectGoal(this)">
+          <span class="goal-emoji">🔄</span>
+          <div class="goal-text">
+            <div class="goal-name">Misto Dinâmico</div>
+            <div class="goal-sub">Flexibilidade e Resistência</div>
+          </div>
+          <div class="goal-radio"></div>
+        </div>
+      </div>
+
+      <div class="fields">
+        <div class="field">
+          <label>Nível (ER: Nível de experiência)</label>
+          <select id="nivel">
+            <option value="Iniciante">Iniciante</option>
+            <option value="Intermediário">Intermediário</option>
+            <option value="Avançado">Avançado</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Duração (ER: Duração estimada)</label>
+          <select id="duracao">
+            <option value="15">15 min</option>
+            <option value="30" selected>30 min</option>
+            <option value="45">45 min</option>
+          </select>
+        </div>
+        <div class="field field-full">
+          <label>Equipamento (ER: Equip. Necessário)</label>
+          <select id="equip">
+            <option value="Nenhum">Somente Peso Corporal</option>
+            <option value="Tapete">Tapete / Colchonete</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-generate" id="genBtn" onclick="gerarTreino()" disabled>✨ Gerar Treino</button>
+    </div>
+  </div>
+
+  <div class="right-col">
+    <div class="card" id="resultCard">
+      <div class="empty" id="emptyState">
+        <div class="empty-icon">🏠</div>
+        <p>Escolha sua modalidade para gerar exercícios que ligam as entidades Usuário, Treino e Exercício.</p>
+      </div>
+      <div id="treinoResult" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedGoal = null;
+
+function selectGoal(el) {
+  document.querySelectorAll('.goal-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedGoal = el.dataset.goal;
+  document.getElementById('genBtn').disabled = false;
+}
+
+// Simulador de requisição (Substitui o Gemini real para não quebrar o protótipo no navegador durante a apresentação)
+async function gerarTreino() {
+  if (!selectedGoal) return;
+  const nivel = document.getElementById('nivel').value;
+  const duracao = document.getElementById('duracao').value;
+
+  document.getElementById('emptyState').style.display = 'none';
+  const result = document.getElementById('treinoResult');
+  result.style.display = 'block';
+  result.innerHTML = `<div style="padding: 20px; text-align:center; color: #9A9A93;">Buscando do Banco de Dados (Simulação)...</div>`;
+
+  // Simulando delay do Banco/Backend
+  setTimeout(() => {
+    let foco = selectedGoal === 'calistenia' ? 'Força Superior e Core' : 'Respiração e Controle Pelvico';
+    let ex1 = selectedGoal === 'calistenia' ? 'Flexão de Braço (Push-up)' : 'The Hundred';
+    let ex2 = selectedGoal === 'calistenia' ? 'Agachamento Pistol (Progressão)' : 'Roll-Up';
+    
+    result.innerHTML = `
+      <div class="treino-header">
+        <div class="treino-title">Sessão de ${selectedGoal.charAt(0).toUpperCase() + selectedGoal.slice(1)}</div>
+        <div class="treino-desc">Foque na execução e na qualidade do movimento.</div>
+      </div>
+      <div class="treino-meta">
+        <span class="badge">${nivel}</span>
+        <span class="badge gray">${duracao} min</span>
+        <span class="badge gray">ID_Treino: #042</span>
+      </div>
+      <hr style="border:none; border-top:1px solid #EAEAE7; margin-bottom: 16px;">
+      
+      <div class="dia-block">
+        <div class="dia-label">Sessão Única — ${foco}</div>
+        
+        <div class="ex-item">
+          <div class="ex-num">1</div>
+          <div>
+            <div class="ex-name">${ex1}</div>
+            <div class="ex-detail">Lembre-se de manter o alinhamento.</div>
+          </div>
+          <div class="ex-chips">
+            <span class="chip">3 séries</span>
+            <span class="chip">12 rep</span>
+          </div>
+        </div>
+
+        <div class="ex-item">
+          <div class="ex-num">2</div>
+          <div>
+            <div class="ex-name">${ex2}</div>
+            <div class="ex-detail">Concentre a força no abdômen.</div>
+          </div>
+          <div class="ex-chips">
+            <span class="chip">3 séries</span>
+            <span class="chip">10 rep</span>
+          </div>
+        </div>
+
+      </div>
+    `;
+  }, 1200);
+}
+</script>
+</body>
+</html>
