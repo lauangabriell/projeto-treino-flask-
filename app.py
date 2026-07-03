@@ -12,6 +12,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
+DIAS_SEMANA = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
+
 # ================================
 # ROTAS DE AUTENTICAÇÃO
 # ================================
@@ -85,7 +87,25 @@ def dashboard():
     
     # Busca SÓ os treinos deste usuário logado
     treinos = Treino.query.filter_by(id_usuario=session['usuario_id']).all()
-    return render_template('dashboard.html', treinos=treinos, nome=session['usuario_nome'])
+    return render_template('dashboard.html', treinos=treinos, nome=session['usuario_nome'], dias_semana=DIAS_SEMANA)
+
+# Cria um treino novo (nome + dia da semana) para o usuário logado
+@app.route('/treino/novo', methods=['POST'])
+def novo_treino():
+    if 'usuario_id' not in session: return redirect(url_for('login'))
+
+    nome = request.form.get('nome', '').strip()
+    dia_semana = request.form.get('dia_semana', '').strip()
+
+    if nome:
+        treino = Treino(nome=nome, dia_semana=dia_semana, id_usuario=session['usuario_id'])
+        db.session.add(treino)
+        db.session.commit()
+        flash("Treino criado com sucesso!")
+    else:
+        flash("Dê um nome para o treino.")
+
+    return redirect(url_for('dashboard'))
 
 @app.route('/treino/<int:id_treino>', methods=['GET', 'POST'])
 def ver_treino(id_treino):
@@ -109,7 +129,61 @@ def ver_treino(id_treino):
             flash("Evolução registrada com sucesso!")
             return redirect(url_for('ver_treino', id_treino=id_treino))
             
-    return render_template('treino.html', treino=treino)
+    return render_template('treino.html', treino=treino, exercicios=Exercicio.query.order_by(Exercicio.nome).all())
+
+# Adiciona um novo exercício dentro de um treino (cria o Exercicio se ainda não existir)
+@app.route('/treino/<int:id_treino>/exercicio/adicionar', methods=['POST'])
+def adicionar_exercicio(id_treino):
+    if 'usuario_id' not in session: return redirect(url_for('login'))
+
+    treino = Treino.query.get_or_404(id_treino)
+    if treino.id_usuario != session['usuario_id']:
+        return redirect(url_for('dashboard'))
+
+    nome_exercicio = request.form.get('nome_exercicio', '').strip()
+    grupo_muscular = request.form.get('grupo_muscular', '').strip()
+    series = request.form.get('series') or 3
+    repeticoes = request.form.get('repeticoes') or 12
+    descanso = request.form.get('descanso') or 30
+
+    if nome_exercicio:
+        # Reaproveita o exercício se já existir na biblioteca (mesmo nome), senão cria um novo
+        exercicio = Exercicio.query.filter_by(nome=nome_exercicio).first()
+        if not exercicio:
+            exercicio = Exercicio(nome=nome_exercicio, grupo_muscular=grupo_muscular)
+            db.session.add(exercicio)
+            db.session.commit()
+
+        item = ItemTreino(
+            id_treino=treino.id_treino,
+            id_exercicio=exercicio.id_exercicio,
+            series=series,
+            repeticoes=repeticoes,
+            descanso_segundos=descanso
+        )
+        db.session.add(item)
+        db.session.commit()
+        flash("Exercício adicionado ao treino!")
+    else:
+        flash("Escolha ou digite o nome do exercício.")
+
+    return redirect(url_for('ver_treino', id_treino=id_treino))
+
+# Remove um exercício de dentro de um treino
+@app.route('/treino/<int:id_treino>/exercicio/<int:id_item>/remover', methods=['POST'])
+def remover_exercicio(id_treino, id_item):
+    if 'usuario_id' not in session: return redirect(url_for('login'))
+
+    treino = Treino.query.get_or_404(id_treino)
+    if treino.id_usuario != session['usuario_id']:
+        return redirect(url_for('dashboard'))
+
+    item = ItemTreino.query.get_or_404(id_item)
+    db.session.delete(item)
+    db.session.commit()
+    flash("Exercício removido do treino.")
+
+    return redirect(url_for('ver_treino', id_treino=id_treino))
 
 # ================================
 # INICIALIZAÇÃO

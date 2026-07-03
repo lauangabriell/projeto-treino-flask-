@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="panel">
+  <h2>Criar novo treino</h2>
+  <form method="POST" action="/treino/novo">
+    <label>Nome do treino</label>
+    <input type="text" name="nome" placeholder="Ex: Treino de Costas" required>
+
+    <label>Dia da semana</label>
+    <select name="dia_semana">
+      {% for dia in dias_semana %}
+        <option value="{{ dia }}">{{ dia }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" class="btn">➕ Criar treino</button>
+  </form>
+</div>
+
+<div class="panel" style="margin-top: 24px;">
   <h2>Meus Treinos da Semana</h2>
   <p>Bem-vindo(a), {{ nome }}. Aqui estão os seus treinos programados.</p>
   

@@ -10,7 +10,7 @@
       <h3 style="margin-top: 0;">💪 {{ item.exercicio.nome }}</h3>
       <p style="font-size: 14px; color: gray;">Grupo Muscular: {{ item.exercicio.grupo_muscular }}</p>
       
-      <form method="POST" style="display: flex; gap: 12px; align-items: flex-end; margin-top: 12px;">
+      <form method="POST" style="display: flex; gap: 12px; align-items: flex-end; margin-top: 12px; flex-wrap: wrap;">
         <input type="hidden" name="id_item" value="{{ item.id_item }}">
         
         <div>
@@ -31,8 +31,48 @@
         <button type="submit" class="btn" style="width: auto; padding: 12px;">Salvar Evolução</button>
       </form>
 
+      <form method="POST" action="/treino/{{ treino.id_treino }}/exercicio/{{ item.id_item }}/remover" style="margin-top: 8px;"
+            onsubmit="return confirm('Remover este exercício do treino?');">
+        <button type="submit" style="background: none; border: none; color: #C0392B; font-size: 13px; cursor: pointer; padding: 0;">🗑️ Remover exercício</button>
+      </form>
+
     </div>
+    {% else %}
+      <p style="color: gray;">Esse treino ainda não tem exercícios. Adicione um abaixo.</p>
     {% endfor %}
   </div>
+
+  <hr style="border: none; border-top: 1px dashed #D4D4CF; margin: 24px 0;">
+
+  <h3>➕ Adicionar exercício a este treino</h3>
+  <form method="POST" action="/treino/{{ treino.id_treino }}/exercicio/adicionar" style="margin-top: 12px;">
+    <label>Nome do exercício</label>
+    <input type="text" name="nome_exercicio" list="lista-exercicios" placeholder="Ex: Rosca Direta" required>
+    <datalist id="lista-exercicios">
+      {% for ex in exercicios %}
+        <option value="{{ ex.nome }}">
+      {% endfor %}
+    </datalist>
+
+    <label>Grupo muscular (se for exercício novo)</label>
+    <input type="text" name="grupo_muscular" placeholder="Ex: Bíceps">
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 100px;">
+        <label style="font-size: 12px; font-weight: bold;">Séries</label>
+        <input type="number" name="series" value="3" min="1">
+      </div>
+      <div style="flex: 1; min-width: 100px;">
+        <label style="font-size: 12px; font-weight: bold;">Repetições</label>
+        <input type="number" name="repeticoes" value="12" min="1">
+      </div>
+      <div style="flex: 1; min-width: 100px;">
+        <label style="font-size: 12px; font-weight: bold;">Descanso (seg)</label>
+        <input type="number" name="descanso" value="30" min="0" step="5">
+      </div>
+    </div>
+
+    <button type="submit" class="btn" style="margin-top: 16px;">Adicionar exercício</button>
+  </form>
 </div>
 {% endblock %}
