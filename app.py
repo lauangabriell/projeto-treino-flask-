@@ -272,6 +272,21 @@ def remover_exercicio(id_treino, id_item):
 
     return redirect(url_for('ver_treino', id_treino=id_treino))
 
+# Exclui o treino inteiro (e os exercícios associados a ele, via cascade)
+@app.route('/treino/<int:id_treino>/excluir', methods=['POST'])
+def excluir_treino(id_treino):
+    if 'usuario_id' not in session: return redirect(url_for('login'))
+
+    treino = Treino.query.get_or_404(id_treino)
+    if treino.id_usuario != session['usuario_id']:
+        return redirect(url_for('dashboard'))
+
+    db.session.delete(treino)
+    db.session.commit()
+    flash("Treino excluído.")
+
+    return redirect(url_for('dashboard'))
+
 # ================================
 # INICIALIZAÇÃO
 # ================================
