@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel">
+  <h2>Meus Treinos da Semana</h2>
+  <p>Bem-vindo(a), {{ nome }}. Aqui estão os seus treinos programados.</p>
+  
+  <div style="margin-top: 20px; display: grid; gap: 16px;">
+    {% for t in treinos %}
+      <div style="border: 1px solid #D4D4CF; padding: 16px; border-radius: 8px;">
+        <h3>{{ t.nome }}</h3>
+        <p style="color: gray;">📅 <strong>{{ t.dia_semana }}</strong></p>
+        <a href="/treino/{{ t.id_treino }}" style="color: #22A96A; text-decoration: none; font-weight: bold;">➡️ Visualizar e Editar Exercícios</a>
+      </div>
+    {% else %}
+      <p>Você ainda não tem treinos cadastrados.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

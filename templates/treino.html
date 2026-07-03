@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel">
+  <a href="/dashboard" style="text-decoration: none; color: gray;">⬅️ Voltar aos treinos</a>
+  <h2 style="margin-top: 16px;">{{ treino.nome }} - {{ treino.dia_semana }}</h2>
+  
+  <div style="margin-top: 24px;">
+    {% for item in treino.itens %}
+    <div style="background: #F5F5F3; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+      <h3 style="margin-top: 0;">💪 {{ item.exercicio.nome }}</h3>
+      <p style="font-size: 14px; color: gray;">Grupo Muscular: {{ item.exercicio.grupo_muscular }}</p>
+      
+      <form method="POST" style="display: flex; gap: 12px; align-items: flex-end; margin-top: 12px;">
+        <input type="hidden" name="id_item" value="{{ item.id_item }}">
+        
+        <div>
+          <label style="font-size: 12px; font-weight: bold;">Séries</label>
+          <input type="number" name="series" value="{{ item.series }}" min="1" style="margin: 0;">
+        </div>
+        
+        <div>
+          <label style="font-size: 12px; font-weight: bold;">Repetições</label>
+          <input type="number" name="repeticoes" value="{{ item.repeticoes }}" min="1" style="margin: 0;">
+        </div>
+
+        <div>
+          <label style="font-size: 12px; font-weight: bold;">Descanso (seg)</label>
+          <input type="number" name="descanso" value="{{ item.descanso_segundos }}" min="0" step="5" style="margin: 0;">
+        </div>
+
+        <button type="submit" class="btn" style="width: auto; padding: 12px;">Salvar Evolução</button>
+      </form>
+
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

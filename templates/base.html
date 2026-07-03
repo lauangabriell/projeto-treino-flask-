@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Treinos</title>
+<style>
+  :root { --green-500: #22A96A; --gray-50: #F5F5F3; --gray-200: #D4D4CF; --surface: #FFFFFF; }
+  body { font-family: 'Inter', sans-serif; background: var(--gray-50); color: #1E1E1A; margin:0; }
+  .navbar { background: #1E1E1A; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;}
+  .navbar a { color: white; text-decoration: none; font-weight: bold; }
+  .container { max-width: 800px; margin: 40px auto; padding: 20px; }
+  .panel { background: var(--surface); padding: 32px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  input, select { width: 100%; padding: 12px; margin: 8px 0 16px; border: 1px solid var(--gray-200); border-radius: 8px; }
+  .btn { background: var(--green-500); color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold;}
+  .alert { background: #ffdddd; padding: 12px; color: red; margin-bottom: 20px; border-radius: 8px;}
+  .alert.success { background: #ddffdd; color: green; }
+</style>
+</head>
+<body>
+  <div class="navbar">
+    <div>🏋️ MeuTreinoDB</div>
+    <div>
+      {% if session.usuario_id %}
+        Olá, {{ session.usuario_nome }} | <a href="/logout">Sair</a>
+      {% else %}
+        <a href="/login">Entrar</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel" style="max-width: 400px; margin: 0 auto;">
+  <h2>Criar nova conta</h2>
+  <form method="POST">
+    <label>Nome Compledo</label>
+    <input type="text" name="nome" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+    
+    <label>Senha</label>
+    <input type="password" name="senha" required>
+    
+    <button type="submit" class="btn">Cadastrar</button>
+  </form>
+</div>
+{% endblock %}
