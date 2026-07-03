@@ -13,6 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 DIAS_SEMANA = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
+CATEGORIAS_TREINO = ["Peito", "Costas", "Pernas", "Panturrilha", "Posterior de Coxa", "Antebraço", "Bíceps", "Tríceps", "Ombro", "Abdômen", "Cardio"]
 
 # ================================
 # ROTAS DE AUTENTICAÇÃO
@@ -51,7 +52,7 @@ def register():
         db.session.commit()
         
         # Como é um projeto de teste, vamos dar um Treino de Presente automático para quem cria a conta
-        novo_treino = Treino(nome="Treino de Adaptação (Perna)", dia_semana="Quinta-feira", id_usuario=novo_user.id_usuario)
+        novo_treino = Treino(nome="Treino de Adaptação (Perna)", dia_semana="Quinta-feira", categoria="Pernas", id_usuario=novo_user.id_usuario)
         db.session.add(novo_treino)
         db.session.commit()
         
@@ -87,23 +88,41 @@ def dashboard():
     
     # Busca SÓ os treinos deste usuário logado
     treinos = Treino.query.filter_by(id_usuario=session['usuario_id']).all()
-    return render_template('dashboard.html', treinos=treinos, nome=session['usuario_nome'], dias_semana=DIAS_SEMANA)
 
-# Cria um treino novo (nome + dia da semana) para o usuário logado
+    # Agrupa os treinos por dia da semana, na ordem certa, pra ficar organizado
+    treinos_por_dia = {dia: [] for dia in DIAS_SEMANA}
+    outros = []  # treinos sem dia definido ou com valor fora da lista
+    for t in treinos:
+        if t.dia_semana in treinos_por_dia:
+            treinos_por_dia[t.dia_semana].append(t)
+        else:
+            outros.append(t)
+
+    return render_template(
+        'dashboard.html',
+        treinos_por_dia=treinos_por_dia,
+        dias_semana=DIAS_SEMANA,
+        outros=outros,
+        nome=session['usuario_nome'],
+        categorias=CATEGORIAS_TREINO
+    )
+
+# Cria um treino novo (dia + categoria) para o usuário logado
 @app.route('/treino/novo', methods=['POST'])
 def novo_treino():
     if 'usuario_id' not in session: return redirect(url_for('login'))
 
-    nome = request.form.get('nome', '').strip()
     dia_semana = request.form.get('dia_semana', '').strip()
+    categoria = request.form.get('categoria', '').strip()
+    nome = request.form.get('nome', '').strip() or categoria
 
-    if nome:
-        treino = Treino(nome=nome, dia_semana=dia_semana, id_usuario=session['usuario_id'])
+    if nome and categoria:
+        treino = Treino(nome=nome, dia_semana=dia_semana, categoria=categoria, id_usuario=session['usuario_id'])
         db.session.add(treino)
         db.session.commit()
         flash("Treino criado com sucesso!")
     else:
-        flash("Dê um nome para o treino.")
+        flash("Escolha o dia e a categoria do treino.")
 
     return redirect(url_for('dashboard'))
 
@@ -129,7 +148,12 @@ def ver_treino(id_treino):
             flash("Evolução registrada com sucesso!")
             return redirect(url_for('ver_treino', id_treino=id_treino))
             
-    return render_template('treino.html', treino=treino, exercicios=Exercicio.query.order_by(Exercicio.nome).all())
+    return render_template(
+        'treino.html',
+        treino=treino,
+        exercicios_da_categoria=Exercicio.query.filter_by(grupo_muscular=treino.categoria).order_by(Exercicio.nome).all(),
+        exercicios=Exercicio.query.order_by(Exercicio.nome).all()
+    )
 
 # Adiciona um novo exercício dentro de um treino (cria o Exercicio se ainda não existir)
 @app.route('/treino/<int:id_treino>/exercicio/adicionar', methods=['POST'])
@@ -141,7 +165,7 @@ def adicionar_exercicio(id_treino):
         return redirect(url_for('dashboard'))
 
     nome_exercicio = request.form.get('nome_exercicio', '').strip()
-    grupo_muscular = request.form.get('grupo_muscular', '').strip()
+    grupo_muscular = request.form.get('grupo_muscular', '').strip() or treino.categoria
     series = request.form.get('series') or 3
     repeticoes = request.form.get('repeticoes') or 12
     descanso = request.form.get('descanso') or 30

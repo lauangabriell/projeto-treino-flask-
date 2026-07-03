@@ -3,15 +3,22 @@
 <div class="panel">
   <h2>Criar novo treino</h2>
   <form method="POST" action="/treino/novo">
-    <label>Nome do treino</label>
-    <input type="text" name="nome" placeholder="Ex: Treino de Costas" required>
-
     <label>Dia da semana</label>
-    <select name="dia_semana">
+    <select name="dia_semana" required>
       {% for dia in dias_semana %}
         <option value="{{ dia }}">{{ dia }}</option>
       {% endfor %}
     </select>
+
+    <label>Categoria (grupo muscular)</label>
+    <select name="categoria" required>
+      {% for cat in categorias %}
+        <option value="{{ cat }}">{{ cat }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Nome do treino (opcional)</label>
+    <input type="text" name="nome" placeholder="Deixe em branco pra usar o nome da categoria">
 
     <button type="submit" class="btn">➕ Criar treino</button>
   </form>
@@ -19,18 +26,43 @@
 
 <div class="panel" style="margin-top: 24px;">
   <h2>Meus Treinos da Semana</h2>
-  <p>Bem-vindo(a), {{ nome }}. Aqui estão os seus treinos programados.</p>
-  
-  <div style="margin-top: 20px; display: grid; gap: 16px;">
-    {% for t in treinos %}
-      <div style="border: 1px solid #D4D4CF; padding: 16px; border-radius: 8px;">
-        <h3>{{ t.nome }}</h3>
-        <p style="color: gray;">📅 <strong>{{ t.dia_semana }}</strong></p>
-        <a href="/treino/{{ t.id_treino }}" style="color: #22A96A; text-decoration: none; font-weight: bold;">➡️ Visualizar e Editar Exercícios</a>
-      </div>
-    {% else %}
-      <p>Você ainda não tem treinos cadastrados.</p>
+  <p>Bem-vindo(a), {{ nome }}. Aqui estão seus treinos organizados por dia.</p>
+
+  <div style="margin-top: 20px;">
+    {% set tem_treino = false %}
+    {% for dia in dias_semana %}
+      {% if treinos_por_dia[dia] %}
+        {% set tem_treino = true %}
+        <h3 style="margin-top: 24px; color: #1A8A55; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px;">📅 {{ dia }}</h3>
+        <div style="display: grid; gap: 12px; margin-top: 10px;">
+          {% for t in treinos_por_dia[dia] %}
+            <div style="border: 1px solid #D4D4CF; padding: 16px; border-radius: 8px;">
+              <span style="background: #E8F8F0; color: #0D5234; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;">{{ t.categoria }}</span>
+              <h3 style="margin: 8px 0 4px;">{{ t.nome }}</h3>
+              <a href="/treino/{{ t.id_treino }}" style="color: #22A96A; text-decoration: none; font-weight: bold;">➡️ Visualizar e Editar Exercícios</a>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
     {% endfor %}
+
+    {% if outros %}
+      {% set tem_treino = true %}
+      <h3 style="margin-top: 24px; color: gray; font-size: 15px; text-transform: uppercase;">Sem dia definido</h3>
+      <div style="display: grid; gap: 12px; margin-top: 10px;">
+        {% for t in outros %}
+          <div style="border: 1px solid #D4D4CF; padding: 16px; border-radius: 8px;">
+            <span style="background: #EAEAE7; color: #5C5C57; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;">{{ t.categoria }}</span>
+            <h3 style="margin: 8px 0 4px;">{{ t.nome }}</h3>
+            <a href="/treino/{{ t.id_treino }}" style="color: #22A96A; text-decoration: none; font-weight: bold;">➡️ Visualizar e Editar Exercícios</a>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if not tem_treino %}
+      <p>Você ainda não tem treinos cadastrados. Crie o primeiro ali em cima ☝️</p>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

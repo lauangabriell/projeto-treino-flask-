@@ -2,6 +2,7 @@
 {% block content %}
 <div class="panel">
   <a href="/dashboard" style="text-decoration: none; color: gray;">⬅️ Voltar aos treinos</a>
+  <span style="background: #E8F8F0; color: #0D5234; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: 8px;">{{ treino.categoria }}</span>
   <h2 style="margin-top: 16px;">{{ treino.nome }} - {{ treino.dia_semana }}</h2>
   
   <div style="margin-top: 24px;">
@@ -44,18 +45,23 @@
 
   <hr style="border: none; border-top: 1px dashed #D4D4CF; margin: 24px 0;">
 
-  <h3>➕ Adicionar exercício a este treino</h3>
+  <h3>➕ Adicionar exercício de {{ treino.categoria }} a este treino</h3>
   <form method="POST" action="/treino/{{ treino.id_treino }}/exercicio/adicionar" style="margin-top: 12px;">
     <label>Nome do exercício</label>
     <input type="text" name="nome_exercicio" list="lista-exercicios" placeholder="Ex: Rosca Direta" required>
     <datalist id="lista-exercicios">
-      {% for ex in exercicios %}
+      {% for ex in exercicios_da_categoria %}
         <option value="{{ ex.nome }}">
       {% endfor %}
     </datalist>
+    {% if exercicios_da_categoria %}
+      <p style="font-size: 12px; color: gray; margin-top: -12px; margin-bottom: 16px;">
+        Já cadastrados em {{ treino.categoria }}: {{ exercicios_da_categoria | map(attribute='nome') | join(', ') }}
+      </p>
+    {% endif %}
 
-    <label>Grupo muscular (se for exercício novo)</label>
-    <input type="text" name="grupo_muscular" placeholder="Ex: Bíceps">
+    <label>Grupo muscular</label>
+    <input type="text" name="grupo_muscular" value="{{ treino.categoria }}">
 
     <div style="display: flex; gap: 12px; flex-wrap: wrap;">
       <div style="flex: 1; min-width: 100px;">

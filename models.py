@@ -18,6 +18,7 @@ class Treino(db.Model):
     id_treino = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False) # Ex: "Treino de Perna"
     dia_semana = db.Column(db.String(50)) # Ex: "Quinta-feira"
+    categoria = db.Column(db.String(50)) # Ex: "Costas", "Peito", "Panturrilha"
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id_usuario'), nullable=False)
     
     # Relação: 1 Treino possui N Exercícios associados (ItemTreino)
