@@ -1,6 +1,6 @@
-🏋️ Sistema de Treinos
+# 🏋️ Sistema de Treinos
 
-Aplicação web para criação e organização de treinos de academia, com acompanhamento de dados físicos e cálculo de IMC.
+**Aplicação web para criação e organização de treinos de academia, com acompanhamento de dados físicos e cálculo de IMC.**
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
@@ -8,53 +8,65 @@ Aplicação web para criação e organização de treinos de academia, com acomp
   <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white">
   <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white">
 </p>
+
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow?style=flat-square">
 </p>
+
 <p align="center">
   <a href="https://projeto-treino-flask.onrender.com"><b>🔗 Acessar aplicação</b></a>
 </p>
 
-Sobre o Projeto
+---
 
-O Sistema de Treinos é uma plataforma web desenvolvida para ajudar usuários a organizar sua rotina de academia de forma simples e estruturada.
+## Sobre o Projeto
+
+O **Sistema de Treinos** é uma plataforma web desenvolvida para ajudar usuários a organizar sua rotina de academia de forma simples e estruturada.
 
 Cada usuário cria sua conta, informa seus dados físicos (idade, sexo, altura, peso, objetivo e nível de experiência) e monta seus próprios treinos, separados por dia da semana e por grupo muscular. A plataforma calcula automaticamente o IMC do usuário e mantém uma biblioteca de exercícios organizada por categoria, disponível para reaproveitamento entre treinos.
 
+---
 
-Objetivos
+## Objetivos
 
 O objetivo principal do projeto é facilitar a organização e o acompanhamento de treinos de academia, oferecendo uma ferramenta simples que centraliza dados físicos, planejamento semanal e histórico de exercícios em um só lugar.
 
 A plataforma busca:
 
+- Eliminar a necessidade de planilhas ou anotações em papel
+- Organizar os treinos de forma visual, por dia da semana e grupo muscular
+- Acompanhar a evolução física do usuário através do cálculo de IMC
 
-Eliminar a necessidade de planilhas ou anotações em papel
-Organizar os treinos de forma visual, por dia da semana e grupo muscular
-Acompanhar a evolução física do usuário através do cálculo de IMC
+---
 
+## Funcionalidades
 
+- Cadastro e login de usuário com senha criptografada
+- Perfil com dados físicos (idade, sexo, altura, peso, objetivo, nível de experiência)
+- Cálculo automático de IMC com classificação (abaixo do peso, normal, sobrepeso, obesidade)
+- Criação de treinos organizados por dia da semana e categoria muscular
+- Biblioteca com 55 exercícios pré-cadastrados (5 por grupo muscular)
+- Adição de exercícios personalizados, com séries, repetições e tempo de descanso
+- Edição e exclusão de treinos e exercícios
 
-Funcionalidades
+---
 
+## Tecnologias Utilizadas
 
-Cadastro e login de usuário com senha criptografada
-Perfil com dados físicos (idade, sexo, altura, peso, objetivo, nível de experiência)
-Cálculo automático de IMC com classificação (abaixo do peso, normal, sobrepeso, obesidade)
-Criação de treinos organizados por dia da semana e categoria muscular
-Biblioteca com 55 exercícios pré-cadastrados (5 por grupo muscular)
-Adição de exercícios personalizados, com séries, repetições e tempo de descanso
-Edição e exclusão de treinos e exercícios
+| Tecnologia | Finalidade |
+|---|---|
+| Python | Linguagem principal do back-end |
+| Flask | Framework web e definição de rotas |
+| Flask-SQLAlchemy | ORM para comunicação com o banco de dados |
+| PostgreSQL (Neon) | Banco de dados relacional |
+| Jinja2 | Motor de templates HTML |
+| Render | Hospedagem e deploy da aplicação |
 
+---
 
+## Estrutura do Projeto
 
-Tecnologias Utilizadas
-
-TecnologiaFinalidadePythonLinguagem principal do back-endFlaskFramework web e definição de rotasFlask-SQLAlchemyORM para comunicação com o banco de dadosPostgreSQL (Neon)Banco de dados relacionalJinja2Motor de templates HTMLRenderHospedagem e deploy da aplicação
-
-
-Estrutura do Projeto
-
+```
 projeto-treino-flask/
 ├── app.py                  # Rotas e lógica principal (controller)
 ├── models.py                # Tabelas do banco de dados (models)
@@ -68,45 +80,57 @@ projeto-treino-flask/
     ├── dashboard.html         # Treinos organizados por dia
     ├── treino.html            # Detalhe de um treino
     └── perfil.html            # Dados físicos e IMC
+```
 
+---
 
-Dependências
+## Dependências
 
+- Python (versão 3.11 ou superior)
+- pip (gerenciador de pacotes, incluído com o Python)
+- Navegador atualizado (Chrome, Firefox, Edge)
+- Variável de ambiente `DATABASE_URL` apontando para um banco PostgreSQL *(opcional — sem ela, a aplicação usa SQLite local)*
+- Visual Studio Code *(recomendado)*
 
-Python (versão 3.11 ou superior)
-pip (gerenciador de pacotes, incluído com o Python)
-Navegador atualizado (Chrome, Firefox, Edge)
-Variável de ambiente DATABASE_URL apontando para um banco PostgreSQL (opcional — sem ela, a aplicação usa SQLite local)
-Visual Studio Code (recomendado)
+---
 
+## Instalação
 
+### 1. Clone o repositório
 
-Instalação
-
-1. Clone o repositório
-
-bashgit clone https://github.com/lauangabriell/projeto-treino-flask.git
+```bash
+git clone https://github.com/lauangabriell/projeto-treino-flask.git
 cd projeto-treino-flask
+```
 
-2. Crie um ambiente virtual
+### 2. Crie um ambiente virtual
 
-bashpython -m venv venv
+```bash
+python -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
+```
 
-3. Instale as dependências
+### 3. Instale as dependências
 
-bashpip install -r requirements.txt
+```bash
+pip install -r requirements.txt
+```
 
-4. Inicie a aplicação
+### 4. Inicie a aplicação
 
-bashpython app.py
+```bash
+python app.py
+```
 
-5. Acesse no navegador
+### 5. Acesse no navegador
 
+```
 http://localhost:5000
+```
 
+---
 
-Nossos Colaboradores
+## Nossos Colaboradores
 
 Este projeto foi desenvolvido com dedicação por:
 
@@ -133,12 +157,15 @@ Este projeto foi desenvolvido com dedicação por:
   </tr>
 </table>
 
-Aplicação Online
+---
+
+## Aplicação Online
 
 A aplicação já está online e disponível para uso:
 
-🔗 projeto-treino-flask.onrender.com
+🔗 **[projeto-treino-flask.onrender.com](https://projeto-treino-flask.onrender.com)**
 
+---
 
 <p align="center">Projeto acadêmico.</p>
 <p align="center"><a href="#-sistema-de-treinos">Voltar ao topo</a></p>
