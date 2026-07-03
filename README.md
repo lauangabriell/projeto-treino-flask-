@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://projeto-treino-flask.onrender.com"><b>🔗 Acessar aplicação</b></a>
+  <a href="https://projeto-treino-flask-sxjk.onrender.com"><b>🔗 Acessar aplicação</b></a>
 </p>
 
 ---
@@ -163,7 +163,7 @@ Este projeto foi desenvolvido com dedicação por:
 
 A aplicação já está online e disponível para uso:
 
-🔗 **[projeto-treino-flask.onrender.com](https://projeto-treino-flask.onrender.com)**
+🔗 **[projeto-treino-flask-sxjk.onrender.com](https://projeto-treino-flask-sxjk.onrender.com)**
 
 ---
 
