@@ -14,6 +14,9 @@ db.init_app(app)
 
 DIAS_SEMANA = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
 CATEGORIAS_TREINO = ["Peito", "Costas", "Pernas", "Panturrilha", "Posterior de Coxa", "Antebraço", "Bíceps", "Tríceps", "Ombro", "Abdômen", "Cardio"]
+OPCOES_SEXO = ["Masculino", "Feminino", "Outro"]
+OPCOES_OBJETIVO = ["Emagrecimento", "Ganho de Massa Muscular", "Condicionamento Físico", "Saúde e Bem-estar", "Reabilitação"]
+OPCOES_NIVEL = ["Iniciante", "Intermediário", "Avançado"]
 
 # ================================
 # ROTAS DE AUTENTICAÇÃO
@@ -41,13 +44,25 @@ def register():
         nome = request.form['nome']
         email = request.form['email']
         senha = request.form['senha']
+
+        # Dados físicos: opcionais no cadastro, dá pra completar depois em "Meu Perfil"
+        idade = request.form.get('idade') or None
+        sexo = request.form.get('sexo') or None
+        altura = request.form.get('altura') or None
+        peso = request.form.get('peso') or None
+        objetivo = request.form.get('objetivo') or None
+        nivel_experiencia = request.form.get('nivel_experiencia') or None
         
         if Usuario.query.filter_by(email=email).first():
             flash("E-mail já existe!")
             return redirect(url_for('register'))
             
         senha_cripto = generate_password_hash(senha)
-        novo_user = Usuario(nome=nome, email=email, senha=senha_cripto)
+        novo_user = Usuario(
+            nome=nome, email=email, senha=senha_cripto,
+            idade=idade, sexo=sexo, altura=altura, peso=peso,
+            objetivo=objetivo, nivel_experiencia=nivel_experiencia
+        )
         db.session.add(novo_user)
         db.session.commit()
         
@@ -66,12 +81,60 @@ def register():
         flash("Conta criada! Faça o login.")
         return redirect(url_for('login'))
         
-    return render_template('register.html')
+    return render_template('register.html', opcoes_sexo=OPCOES_SEXO, opcoes_objetivo=OPCOES_OBJETIVO, opcoes_nivel=OPCOES_NIVEL)
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+# ================================
+# PERFIL DO USUÁRIO (dados físicos + IMC)
+# ================================
+@app.route('/perfil', methods=['GET', 'POST'])
+def perfil():
+    if 'usuario_id' not in session: return redirect(url_for('login'))
+
+    usuario = Usuario.query.get_or_404(session['usuario_id'])
+
+    if request.method == 'POST':
+        usuario.idade = request.form.get('idade') or None
+        usuario.sexo = request.form.get('sexo') or None
+        usuario.altura = request.form.get('altura') or None
+        usuario.peso = request.form.get('peso') or None
+        usuario.objetivo = request.form.get('objetivo') or None
+        usuario.nivel_experiencia = request.form.get('nivel_experiencia') or None
+        db.session.commit()
+        flash("Perfil atualizado!")
+        return redirect(url_for('perfil'))
+
+    # Calcula o IMC (peso / altura²) só se os dois estiverem preenchidos
+    imc = None
+    classificacao = None
+    if usuario.peso and usuario.altura and float(usuario.altura) > 0:
+        imc = round(float(usuario.peso) / (float(usuario.altura) ** 2), 1)
+        if imc < 18.5:
+            classificacao = "Abaixo do peso"
+        elif imc < 25:
+            classificacao = "Peso normal"
+        elif imc < 30:
+            classificacao = "Sobrepeso"
+        elif imc < 35:
+            classificacao = "Obesidade grau I"
+        elif imc < 40:
+            classificacao = "Obesidade grau II"
+        else:
+            classificacao = "Obesidade grau III"
+
+    return render_template(
+        'perfil.html',
+        usuario=usuario,
+        imc=imc,
+        classificacao=classificacao,
+        opcoes_sexo=OPCOES_SEXO,
+        opcoes_objetivo=OPCOES_OBJETIVO,
+        opcoes_nivel=OPCOES_NIVEL
+    )
 
 # ================================
 # ROTAS DO SISTEMA (TREINOS)
@@ -213,16 +276,27 @@ def remover_exercicio(id_treino, id_item):
 # INICIALIZAÇÃO
 # ================================
 def iniciar_banco():
-    # Cria uma biblioteca fixa de exercícios se estiver vazia
-    if Exercicio.query.count() == 0:
-        exs = [
-            Exercicio(nome="Agachamento Livre", grupo_muscular="Pernas"),
-            Exercicio(nome="Leg Press 45", grupo_muscular="Pernas"),
-            Exercicio(nome="Supino Reto", grupo_muscular="Peito"),
-            Exercicio(nome="Puxada Costas", grupo_muscular="Costas")
-        ]
-        db.session.bulk_save_objects(exs)
-        db.session.commit()
+    # Biblioteca de exercícios: pelo menos 5 por grupo muscular (categoria)
+    biblioteca = {
+        "Peito": ["Supino Reto", "Supino Inclinado", "Crucifixo Reto", "Crossover", "Flexão de Braço"],
+        "Costas": ["Puxada Frente", "Remada Curvada", "Remada Cavalinho", "Puxada Pulldown", "Levantamento Terra"],
+        "Pernas": ["Agachamento Livre", "Leg Press 45", "Cadeira Extensora", "Avanço (Afundo)", "Agachamento Búlgaro"],
+        "Panturrilha": ["Panturrilha em Pé", "Panturrilha Sentado", "Panturrilha no Leg Press", "Panturrilha Unilateral", "Salto de Panturrilha (Jump Calf)"],
+        "Posterior de Coxa": ["Mesa Flexora", "Stiff", "Cadeira Flexora", "Levantamento Terra Romeno", "Elevação de Quadril (Hip Thrust)"],
+        "Antebraço": ["Rosca de Punho", "Rosca de Punho Invertida", "Farmer's Walk", "Rosca Direta Pegada Pronada", "Extensão de Punho com Halteres"],
+        "Bíceps": ["Rosca Direta", "Rosca Alternada", "Rosca Scott", "Rosca Martelo", "Rosca Concentrada"],
+        "Tríceps": ["Tríceps Pulley", "Tríceps Testa", "Tríceps Francês", "Mergulho no Banco", "Tríceps Corda"],
+        "Ombro": ["Desenvolvimento com Halteres", "Elevação Lateral", "Elevação Frontal", "Remada Alta", "Desenvolvimento Militar"],
+        "Abdômen": ["Abdominal Supra", "Prancha Abdominal", "Abdominal Infra", "Abdominal Oblíquo", "Elevação de Pernas"],
+        "Cardio": ["Corrida na Esteira", "Bicicleta Ergométrica", "Pular Corda", "Escada (StairMaster)", "Remo Ergométrico"],
+    }
+
+    for grupo, nomes in biblioteca.items():
+        for nome in nomes:
+            # Só cria se ainda não existir (evita duplicar em cada restart do app)
+            if not Exercicio.query.filter_by(nome=nome).first():
+                db.session.add(Exercicio(nome=nome, grupo_muscular=grupo))
+    db.session.commit()
 
 with app.app_context():
     db.create_all()

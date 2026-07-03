@@ -22,7 +22,7 @@
     <div>🏋️ MeuTreinoDB</div>
     <div>
       {% if session.usuario_id %}
-        Olá, {{ session.usuario_nome }} | <a href="/logout">Sair</a>
+        Olá, {{ session.usuario_nome }} | <a href="/perfil">Meu Perfil</a> | <a href="/logout">Sair</a>
       {% else %}
         <a href="/login">Entrar</a>
       {% endif %}

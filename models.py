@@ -9,6 +9,14 @@ class Usuario(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     senha = db.Column(db.String(255), nullable=False) # Guardaremos a senha criptografada
+
+    # Dados físicos e de perfil (usados pra calcular IMC e personalizar treinos)
+    idade = db.Column(db.Integer)
+    sexo = db.Column(db.String(20))
+    altura = db.Column(db.Float)  # em metros, ex: 1.75
+    peso = db.Column(db.Float)    # em kg, ex: 70.5
+    objetivo = db.Column(db.String(100))
+    nivel_experiencia = db.Column(db.String(50))
     
     # Relação: 1 Usuário possui N Treinos
     treinos = db.relationship('Treino', backref='usuario', lazy=True)

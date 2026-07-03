@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel">
+  <a href="/dashboard" style="text-decoration: none; color: gray;">⬅️ Voltar aos treinos</a>
+  <h2 style="margin-top: 16px;">Meu Perfil</h2>
+  <p style="color: gray; font-size: 14px;">{{ usuario.nome }} • {{ usuario.email }}</p>
+
+  {% if imc %}
+  <div style="background: #E8F8F0; border: 1px solid #C3EDDA; border-radius: 12px; padding: 20px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+    <div>
+      <p style="font-size: 12px; color: #1A8A55; font-weight: 700; text-transform: uppercase;">Seu IMC</p>
+      <p style="font-size: 32px; font-weight: 700; color: #0D5234;">{{ imc }}</p>
+      <p style="font-size: 14px; color: #1A8A55; font-weight: 600;">{{ classificacao }}</p>
+    </div>
+    <div style="display: flex; gap: 20px;">
+      <div style="text-align: center;">
+        <p style="font-size: 11px; color: gray;">PESO</p>
+        <p style="font-size: 18px; font-weight: 700;">{{ usuario.peso }} kg</p>
+      </div>
+      <div style="text-align: center;">
+        <p style="font-size: 11px; color: gray;">ALTURA</p>
+        <p style="font-size: 18px; font-weight: 700;">{{ usuario.altura }} m</p>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div style="background: #F5F5F3; border-radius: 12px; padding: 16px; margin-top: 20px; color: gray; font-size: 14px;">
+    Preencha peso e altura abaixo para ver seu IMC calculado automaticamente.
+  </div>
+  {% endif %}
+
+  <hr style="border: none; border-top: 1px dashed #D4D4CF; margin: 24px 0;">
+
+  <h3 style="margin-bottom: 12px;">Editar meus dados</h3>
+  <form method="POST">
+    <div style="display: flex; gap: 12px;">
+      <div style="flex: 1;">
+        <label>Idade</label>
+        <input type="number" name="idade" value="{{ usuario.idade or '' }}" min="10" max="100">
+      </div>
+      <div style="flex: 1;">
+        <label>Sexo</label>
+        <select name="sexo">
+          <option value="">Selecione</option>
+          {% for op in opcoes_sexo %}
+            <option value="{{ op }}" {% if usuario.sexo == op %}selected{% endif %}>{{ op }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 12px;">
+      <div style="flex: 1;">
+        <label>Altura (m)</label>
+        <input type="number" name="altura" value="{{ usuario.altura or '' }}" step="0.01" min="0.5" max="2.5" placeholder="Ex: 1.75">
+      </div>
+      <div style="flex: 1;">
+        <label>Peso (kg)</label>
+        <input type="number" name="peso" value="{{ usuario.peso or '' }}" step="0.1" min="20" max="300" placeholder="Ex: 70.5">
+      </div>
+    </div>
+
+    <label>Objetivo</label>
+    <select name="objetivo">
+      <option value="">Selecione</option>
+      {% for op in opcoes_objetivo %}
+        <option value="{{ op }}" {% if usuario.objetivo == op %}selected{% endif %}>{{ op }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Nível de experiência</label>
+    <select name="nivel_experiencia">
+      <option value="">Selecione</option>
+      {% for op in opcoes_nivel %}
+        <option value="{{ op }}" {% if usuario.nivel_experiencia == op %}selected{% endif %}>{{ op }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" class="btn" style="margin-top: 16px;">Salvar alterações</button>
+  </form>
+</div>
+{% endblock %}
